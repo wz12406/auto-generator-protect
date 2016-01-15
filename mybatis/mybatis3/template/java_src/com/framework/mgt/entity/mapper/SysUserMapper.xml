@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.framework.mgt.dao.SysUserDao">
+
+	<resultMap id="RM_SysUser" type="com.framework.mgt.entity.SysUser">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="loginName" column="login_name"/>
+        <result property="phone" column="phone"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateDate" column="update_date"/>
+        <result property="remarks" column="remarks"/>
+        <result property="delFlag" column="del_flag"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,name,email,password,login_name,phone,create_by,create_date,update_by,update_date,remarks,del_flag
+	    ]]>
+	</sql>
+
+	<!--保存 -->
+	<insert id="save">
+	    <![CDATA[
+	        INSERT INTO sys_user (
+	        	id ,
+	        	name ,
+	        	email ,
+	        	password ,
+	        	login_name ,
+	        	phone ,
+	        	create_by ,
+	        	create_date ,
+	        	update_by ,
+	        	update_date ,
+	        	remarks ,
+	        	del_flag 
+	        ) VALUES (
+	        	#{id} ,
+	        	#{name} ,
+	        	#{email} ,
+	        	#{password} ,
+	        	#{loginName} ,
+	        	#{phone} ,
+	        	#{createBy} ,
+	        	#{createDate} ,
+	        	#{updateBy} ,
+	        	#{updateDate} ,
+	        	#{remarks} ,
+	        	#{delFlag} 
+	        )
+	    ]]>
+	</insert>
+	
+	<!-- update 条件组合 -->
+	<sql id="update_sql">
+		<set>
+			<if test="name != null and name != ''">
+				name = #{name} ,
+			</if>
+			<if test="email != null and email != ''">
+				email = #{email} ,
+			</if>
+			<if test="password != null and password != ''">
+				password = #{password} ,
+			</if>
+			<if test="loginName != null and loginName != ''">
+				login_name = #{loginName} ,
+			</if>
+			<if test="phone != null and phone != ''">
+				phone = #{phone} ,
+			</if>
+			<if test="createBy != null and createBy != ''">
+				create_by = #{createBy} ,
+			</if>
+			<if test="createDate != null">
+				create_date = #{createDate} ,
+			</if>
+			<if test="updateBy != null and updateBy != ''">
+				update_by = #{updateBy} ,
+			</if>
+			<if test="updateDate != null">
+				update_date = #{updateDate} ,
+			</if>
+			<if test="remarks != null and remarks != ''">
+				remarks = #{remarks} ,
+			</if>
+			<if test="delFlag != null and delFlag != ''">
+				del_flag = #{delFlag} 
+			</if>
+		</set>
+	</sql>
+	
+	<!-- 修改 -->
+	<update id="update">
+		UPDATE sys_user
+		<include refid="update_sql" />
+		WHERE
+			id = #{id} 	</update>
+
+	<!-- 根据ID删除 -->
+	<delete id="delete">
+    	<![CDATA[
+        	DELETE FROM sys_user 
+        	WHERE  id = #{id}
+    	]]>
+	</delete>
+	
+	<!-- getById -->
+	<select id="getById" resultMap="RM_SysUser">
+		SELECT
+		<include refid="columns" />
+		FROM sys_user
+		WHERE  id = #{id}  
+	</select>
+
+	<!-- 获取总数 -->
+	<select id="getTotalCount" resultType="int">
+		SELECT COUNT(1)
+		FROM sys_user
+		<where>
+		<if test="model.id != null and model.id !=''">
+			AND id = #{model.id}
+		</if>
+		<if test="model.name != null and model.name !=''">
+			AND name = #{model.name}
+		</if>
+		<if test="model.email != null and model.email !=''">
+			AND email = #{model.email}
+		</if>
+		<if test="model.password != null and model.password !=''">
+			AND password = #{model.password}
+		</if>
+		<if test="model.loginName != null and model.loginName !=''">
+			AND login_name = #{model.loginName}
+		</if>
+		<if test="model.phone != null and model.phone !=''">
+			AND phone = #{model.phone}
+		</if>
+		<if test="model.createBy != null and model.createBy !=''">
+			AND create_by = #{model.createBy}
+		</if>
+		<if test="model.createDate != null">
+			AND create_date = #{model.createDate}
+		</if> 
+		<if test="model.updateBy != null and model.updateBy !=''">
+			AND update_by = #{model.updateBy}
+		</if>
+		<if test="model.updateDate != null">
+			AND update_date = #{model.updateDate}
+		</if> 
+		<if test="model.remarks != null and model.remarks !=''">
+			AND remarks = #{model.remarks}
+		</if>
+		<if test="model.delFlag != null and model.delFlag !=''">
+			AND del_flag = #{model.delFlag}
+		</if>
+		</where>
+	</select>  
+	
+	<!-- 模糊查询： 字段名 LIKE '%${model.字段名}%' 如:  username like ''%${model.username}%'' -->
+	<!-- 按条件组合搜索列表  -->
+	<select id="findList" resultMap="RM_SysUser">
+		SELECT
+		<include refid="columns" />
+		FROM  sys_user
+		<where>
+			<if test="id != null and id !=''">
+				AND id = #{id}
+			</if>
+			<if test="name != null and name !=''">
+				AND name = #{name}
+			</if>
+			<if test="email != null and email !=''">
+				AND email = #{email}
+			</if>
+			<if test="password != null and password !=''">
+				AND password = #{password}
+			</if>
+			<if test="loginName != null and loginName !=''">
+				AND login_name = #{loginName}
+			</if>
+			<if test="phone != null and phone !=''">
+				AND phone = #{phone}
+			</if>
+			<if test="createBy != null and createBy !=''">
+				AND create_by = #{createBy}
+			</if>
+		<if test="createDate != null">
+			AND create_date = #{createDate}
+		</if>
+			<if test="updateBy != null and updateBy !=''">
+				AND update_by = #{updateBy}
+			</if>
+		<if test="updateDate != null">
+			AND update_date = #{updateDate}
+		</if>
+			<if test="remarks != null and remarks !=''">
+				AND remarks = #{remarks}
+			</if>
+			<if test="delFlag != null and delFlag !=''">
+				AND del_flag = #{delFlag}
+			</if>
+		</where>
+		<if test="sortColumns != null and sortColumns !=''">
+			ORDER BY ${sortColumns}
+		</if>
+	</select>
+
+	<!-- 分页 -->
+	<select id="findPageList" resultMap="RM_SysUser">
+		SELECT TOP(#{rows})
+		<include refid="columns" />
+		FROM (
+		SELECT row_number() OVER(ORDER BY ${model.sortColumns}) AS rownumber,*
+		FROM sys_user
+		<where>
+				<if test="model.id != null and model.id !=''">
+					AND id = #{model.id}
+				</if>
+				<if test="model.name != null and model.name !=''">
+					AND name = #{model.name}
+				</if>
+				<if test="model.email != null and model.email !=''">
+					AND email = #{model.email}
+				</if>
+				<if test="model.password != null and model.password !=''">
+					AND password = #{model.password}
+				</if>
+				<if test="model.loginName != null and model.loginName !=''">
+					AND login_name = #{model.loginName}
+				</if>
+				<if test="model.phone != null and model.phone !=''">
+					AND phone = #{model.phone}
+				</if>
+				<if test="model.createBy != null and model.createBy !=''">
+					AND create_by = #{model.createBy}
+				</if>
+			<if test="model.createDate != null">
+				AND create_date = #{model.createDate}
+			</if>
+				<if test="model.updateBy != null and model.updateBy !=''">
+					AND update_by = #{model.updateBy}
+				</if>
+			<if test="model.updateDate != null">
+				AND update_date = #{model.updateDate}
+			</if>
+				<if test="model.remarks != null and model.remarks !=''">
+					AND remarks = #{model.remarks}
+				</if>
+				<if test="model.delFlag != null and model.delFlag !=''">
+					AND del_flag = #{model.delFlag}
+				</if>
+		</where>
+		) a
+		WHERE a.rownumber > #{offset}
+	</select>
+
+</mapper>
